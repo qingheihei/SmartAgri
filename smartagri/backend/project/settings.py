@@ -127,8 +127,8 @@ USE_TZ = False
 STATIC_URL = '/static/'
 
 #upload file dir
-MEDIA_ROOT = os.path.join(BASE_DIR, r'project\static\upfile')
-MEDIA_URL= r'/upfile/'
+MEDIA_ROOT = os.path.join(BASE_DIR, r'media')
+MEDIA_URL= r'/media/'
 
 #global auth
 

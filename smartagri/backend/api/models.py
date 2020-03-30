@@ -69,7 +69,7 @@ class Camera(models.Model):
 
 class Image(models.Model):
     camera = models.ForeignKey('Camera', on_delete=models.CASCADE)
-    img_path = models.ImageField(upload_to=settings.MEDIA_ROOT)
+    img_path = models.ImageField(upload_to='images/')
     created_at = models.DateTimeField(auto_now=True)
     class Meta:
         db_table = 'image'

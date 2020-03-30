@@ -19,8 +19,6 @@ from api.utils.customize_viewset_base import CustomizeViewBase
 import os
 from rest_framework import status
 
-IMAGE_DIR = 'media/image/'
-
 class MyPageNumberPagination(CursorPagination):
     #page_size = 2
     #page_size_query_param = "size"
