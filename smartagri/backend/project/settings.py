@@ -80,10 +80,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'agridb',
-        'USER':'root',
+        'USER':'jyou',
         'PASSWORD': '928724',
         'HOST': 'localhost',
         'PORT': '3306',
+        'OPTIONS':{
+            'charset': 'utf8mb4',
+            'sql_mode': 'TRADITIONAL,NO_AUTO_VALUE_ON_ZERO,ONLY_FULL_GROUP_BY',
+        },
     }
 }
 
@@ -125,6 +129,9 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
 
 #upload file dir
 MEDIA_ROOT = os.path.join(BASE_DIR, r'media')

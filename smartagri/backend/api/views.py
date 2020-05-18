@@ -38,6 +38,9 @@ from rest_framework.renderers import JSONRenderer,BrowsableAPIRenderer,AdminRend
 from rest_framework.generics import GenericAPIView
 from rest_framework.viewsets import GenericViewSet,ModelViewSet
 
+def graph(request):
+    return render(request, 'graph.html')
+
 class SensorView(CustomizeViewBase):
     queryset = models.Sensor.objects.all()
     serializer_class = SensorSerializer

@@ -1,0 +1,180 @@
+<html>
+{% load static %}
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="{% static 'js/jquery.js'%}" type="text/javascript"></script>
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+
+</head>
+
+<body>
+    <div id="air_temp_chart" style="width: 800px; height: 450px"></div>
+    <div id="air_humid_chart" style="width: 800px; height: 450px"></div>
+    <div id="air_CO2_chart" style="width: 800px; height: 450px"></div>
+    <div id="air_light_chart" style="width: 800px; height: 450px"></div>
+    <div id="soil_temp_chart" style="width: 800px; height: 450px"></div>
+    <div id="soil_humid_chart" style="width: 800px; height: 450px"></div>
+    <div id="soil_ec_chart" style="width: 800px; height: 450px"></div>
+</body>
+
+<script type="text/javascript">
+    var unit_dic = new Array();
+    unit_dic['air_temp'] = 'degree'
+    unit_dic['air_humid'] = 'percent'
+    unit_dic['air_CO2'] = 'ppm'
+    unit_dic['air_light'] = 'lux'
+    unit_dic['soil_temp'] = 'degree'
+    unit_dic['soil_humid'] = 'percent'
+    unit_dic['soil_ec'] = 'mS/cm'
+
+    $(function () {
+        var value_list = [];
+        var time_List = [];
+        $.ajaxSettings.async = false;
+        $.getJSON("http://52.199.167.207:8888/api/v1/sensorvalues/?sensor_type=air_temperature&records_number=100",
+            function (
+                data) {
+                for (var i = 0; i < data.data.length; i++) {
+                    value_list.push(data.data[i].value);
+                    time_List.push(data.data[i].created_at);
+                }
+            });
+        draw_air_chart('air_temp', value_list, time_List, 'air_temp_chart');
+    });
+    $(function () {
+        var value_list = [];
+        var time_List = [];
+        $.ajaxSettings.async = false;
+        $.getJSON("http://52.199.167.207:8888/api/v1/sensorvalues/?sensor_type=air_humidity&records_number=100",
+            function (
+                data) {
+                for (var i = 0; i < data.data.length; i++) {
+                    value_list.push(data.data[i].value);
+                    time_List.push(data.data[i].created_at);
+                }
+            });
+        draw_air_chart('air_humid', value_list, time_List, 'air_humid_chart');
+    });
+
+    $(function () {
+        var value_list = [];
+        var time_List = [];
+        $.ajaxSettings.async = false;
+        $.getJSON("http://52.199.167.207:8888/api/v1/sensorvalues/?sensor_type=air_co2&records_number=100", function (
+            data) {
+            for (var i = 0; i < data.data.length; i++) {
+                value_list.push(data.data[i].value);
+                time_List.push(data.data[i].created_at);
+            }
+        });
+        draw_air_chart('air_CO2', value_list, time_List, 'air_CO2_chart');
+    });
+    $(function () {
+        var value_list = [];
+        var time_List = [];
+        $.ajaxSettings.async = false;
+        $.getJSON("http://52.199.167.207:8888/api/v1/sensorvalues/?sensor_type=air_light&records_number=100",
+            function (
+                data) {
+                for (var i = 0; i < data.data.length; i++) {
+                    value_list.push(data.data[i].value);
+                    time_List.push(data.data[i].created_at);
+                }
+            });
+        draw_air_chart('air_light', value_list, time_List, 'air_light_chart');
+    });
+    $(function () {
+        var value_list = [];
+        var time_List = [];
+        $.ajaxSettings.async = false;
+        $.getJSON("http://52.199.167.207:8888/api/v1/sensorvalues/?sensor_type=soil_temperature&records_number=100",
+            function (
+                data) {
+                for (var i = 0; i < data.data.length; i++) {
+                    value_list.push(data.data[i].value);
+                    time_List.push(data.data[i].created_at);
+                }
+            });
+        draw_air_chart('soil_temp', value_list, time_List, 'soil_temp_chart');
+    });
+    $(function () {
+        var value_list = [];
+        var time_List = [];
+        $.ajaxSettings.async = false;
+        $.getJSON("http://52.199.167.207:8888/api/v1/sensorvalues/?sensor_type=soil_humidity&records_number=100",
+            function (
+                data) {
+                for (var i = 0; i < data.data.length; i++) {
+                    value_list.push(data.data[i].value);
+                    time_List.push(data.data[i].created_at);
+                }
+            });
+        draw_air_chart('soil_humid', value_list, time_List, 'soil_humid_chart');
+    });
+    $(function () {
+        var value_list = [];
+        var time_List = [];
+        $.ajaxSettings.async = false;
+        $.getJSON("http://52.199.167.207:8888/api/v1/sensorvalues/?sensor_type=soil_ec&records_number=100",
+            function (
+                data) {
+                for (var i = 0; i < data.data.length; i++) {
+                    value_list.push(data.data[i].value);
+                    time_List.push(data.data[i].created_at);
+                }
+            });
+        draw_air_chart('soil_ec', value_list, time_List, 'soil_ec_chart');
+    });
+
+    function draw_air_chart(type, value_list, time_List, div_id) {
+        var myChart = echarts.init(document.getElementById(div_id));
+        myChart.setOption(option = {
+            title: {
+                text: type
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: [type]
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                name: 'time',
+                type: 'category',
+                boundaryGap: false,
+                data: time_List,
+                axisLabel: {
+                    show: true,
+                    interval: 10,
+		    rotate: 20,
+                    margin: 8,
+                    textStyle: {
+                        color: '#333'
+                    }
+                },
+            },
+            yAxis: {
+                name: unit_dic[type],
+                type: 'value'
+            },            
+            grid: {
+                left: '20%',
+                bottom: '20%'
+            },
+            series: {
+                name: type,
+                type: 'line',
+                data: value_list
+            },
+        });
+        myChart.setOption(option)
+    };
+</script>
+
+</html>
