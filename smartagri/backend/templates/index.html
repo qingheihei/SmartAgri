@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>echarts</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+
+<body>
+    <header>
+        <h1>data visualization</h1>
+        <div class="showTime"></div>
+        <script>
+            var t = null;
+            t = setTimeout(time, 1000); //開始运行
+            function time() {
+                clearTimeout(t); //清除定时器
+                dt = new Date();
+                var y = dt.getFullYear();
+                var mt = dt.getMonth() + 1;
+                var day = dt.getDate();
+                var h = dt.getHours(); //获取时
+                var m = dt.getMinutes(); //获取分
+                var s = dt.getSeconds(); //获取秒
+                document.querySelector(".showTime").innerHTML =
+                    y +
+                    "/" +
+                    mt +
+                    "/" +
+                    day +
+                    "-" +
+                    h +
+                    ":" +
+                    m +
+                    ":" +
+                    s +
+                    "";
+                t = setTimeout(time, 1000); //设定定时器，循环运行
+            }
+        </script>
+    </header>
+    <section class="mainbox">
+        <div class="column">
+            <div class="panel line">
+                <h2>空気
+                    <a href="javascript:;">温度</a>
+                    <a href="javascript:;">湿度</a>
+                </h2>
+                <div class="chart">グラフ</div>
+                <div class="panel-footer"></div>
+            </div>
+            <div class="panel line2">
+                <h2>照度</h2>
+                <div class="chart">折線</div>
+                <div class="panel-footer"></div>
+            </div>
+            <div class="panel pie">
+                <h2>CO2 </h2>
+                <div class="chart">Gauge</div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="no">
+                <div class="no-hd">
+                    <ul id="sum">
+                        <li>12345</li>
+                        <li>27</li>
+                    </ul>
+                </div>
+                <div class="no-bd">
+                    <ul>
+                        <li>データ件数</li>
+                        <li>運用日数</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="map">
+                <div class="map1">
+                </div>
+                <div class="chart">
+                    images
+                </div>
+                <div class="alarm">[alarm info]</div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="panel bar">
+                <h2>土壌・溶液
+                    <a href="javascript:;">温度</a>
+                    <a href="javascript:;">湿度</a>
+                </h2>
+                <div class="chart"></div>
+                <div class="panel-footer"></div>
+            </div>
+            <div class="panel bar2">
+                <h2>電気伝導度</h2>
+                <div class="chart">折線</div>
+                <div class="panel-footer"></div>
+            </div>
+            <div class="panel pie">
+                <h2>ダウンロード</h2>
+                <div class="chart">
+                    <ul>
+                        <li>Start Date</li>
+                        <li><input type="date" value="2020-05-01" /></li>
+                    </ul>
+                    <ul>
+                        <li>End Date</li>
+                        <li><input type="date" value="2020-05-01" /></li>
+                    </ul>
+                    <ul>
+                        <button type="button" id="btn1">download</button>
+                    </ul>
+                                        
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </section>
+    <script src="{% static 'js/flexible.js'%}"></script>
+    <script src="{% static 'js/echarts.min.js'%}"></script>
+    <script src="{% static 'js/jquery.js'%}"></script>
+    <script src="{% static 'js/index.js'%}"></script>
+</body>
+
+</html>

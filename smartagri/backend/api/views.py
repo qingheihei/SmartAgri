@@ -41,6 +41,9 @@ from rest_framework.viewsets import GenericViewSet,ModelViewSet
 def graph(request):
     return render(request, 'graph.html')
 
+def index(request):
+    return render(request, 'index.html')
+
 class SensorView(CustomizeViewBase):
     queryset = models.Sensor.objects.all()
     serializer_class = SensorSerializer

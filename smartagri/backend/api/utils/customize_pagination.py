@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 
 class LargeResultsSetPagination(LimitOffsetPagination):
-    page_size = 10
+    page_size = 2520
     page_size_query_param = 'page_size'
     max_page_size = 10000
 
