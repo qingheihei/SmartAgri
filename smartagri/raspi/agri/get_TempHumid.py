@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 import os
-import smbus
+from smbus2 import SMBus
 import time
 
 SHT35_ADDR = 0x45
@@ -15,7 +15,7 @@ class SHT35():
         myBus = 0
     else:
         myBus = 1
-    bus = smbus.SMBus(myBus)
+    bus = SMBus(myBus)
 
     def setUp(self):
         # write command for periodic continuous measurement (1mps)
