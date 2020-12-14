@@ -6,9 +6,11 @@ from django.views import View
 from rest_framework.views import APIView
 from rest_framework.authentication import BaseAuthentication,BasicAuthentication
 from rest_framework.versioning import QueryParameterVersioning,URLPathVersioning
+from rest_framework import serializers
 import json
 from api import models
 from api.utils.permission import AdminPermission
+
 
 # Create your views here.
 
@@ -44,12 +46,23 @@ class AuthView(APIView):
             ret['msg'] = 'eee'
         return JsonResponse(ret)
 
+class HouseSerializer(serializers.Serializer):
+    house_id = serializers.IntegerField()
+    house_name = serializers.CharField()
 
 @method_decorator(csrf_exempt, name='dispatch')
 class HouseView(APIView):
-    permission_classes = []
     def get(self,request,*args,**kwargs):
-        return HttpResponse('GET OK')
+        # 方式1
+        # houses = models.House.objects.all().values_list('house_name')
+        # houses = list(houses)
+        # ret = json.dumps(houses, ensure_ascii=False)
+
+        house = models.House.objects.all().first()
+        ser = HouseSerializer(instance=house, many=False)
+        ret = json.dumps(ser.data, ensure_ascii=False)
+        return HttpResponse(ret)
+
     def post(self,request,*args,**kwargs):
         return HttpResponse('POST OK')
     def put(self,request,*args,**kwargs):
@@ -75,7 +88,7 @@ from rest_framework.parsers import JSONParser,FormParser
 class SensorView(APIView):
     #parser_classes = [JSONParser,FormParser,]
     def post(self,request,*args,**kwargs):
-        print(request.data)
+        #print(request.data)
         return HttpResponse('POST OK')
     
 class SensorValueView(APIView):
