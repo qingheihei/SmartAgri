@@ -100,11 +100,15 @@ class SensorView(APIView):
 class SensorValueView(APIView):
     pass
 
-class MyPageNumberPagination(PageNumberPagination):
-    page_size = 3
-    page_size_query_param = 'size' # /?size=xx
-    max_page_size = 10
-    page_query_param = 'page'
+class MyPageNumberPagination(LimitOffsetPagination):
+    # page_size = 3
+    # page_size_query_param = 'size' # /?size=xx
+    # max_page_size = 10
+    # page_query_param = 'page'
+    default_limit = 2
+    limit_query_param = 'limit'
+    offset_query_param = 'offset'
+    max_limit = 10
 
 class SensorTypeView(APIView):
     def get(self,request,*args,**kwargs):
