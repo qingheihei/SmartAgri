@@ -70,14 +70,26 @@ class HouseView(APIView):
     def delete(self,request,*args,**kwargs):
         return HttpResponse('DELETE OK')
 
+# class ThingSerializer(serializers.Serializer):
+#     thing_id = serializers.IntegerField()
+#     house = serializers.CharField(source="house.house_name")
+#     xxx = serializers.CharField(source="status_code")
+#     ooo = serializers.CharField(source="get_status_code_display")
+
+class ThingSerializer(serializers.ModelSerializer):
+    ooo = serializers.CharField(source="get_status_code_display")
+    class Meta:
+        model = models.Thing
+        fields = ['thing_id','house','cpu_temp','ooo']
+        depth = 1
+
 class ThingView(APIView):
     def get(self,request,*args,**kwargs):
-        #print(request.version)
-        ret = {
-            'code': '1000',
-            'msg': 'OK'
-        }
-        return HttpResponse(json.dumps(ret),status=201)
+        things = models.Thing.objects.all()
+        ser = ThingSerializer(instance=things, many=True)
+        #print(ser.data)
+        ret = json.dumps(ser.data, ensure_ascii=False)
+        return HttpResponse(ret)
 
 class MachineView(APIView):
     pass

@@ -35,13 +35,18 @@ class House(models.Model):
         db_table = 'house'
 
 class Thing(models.Model):
+    status_code_choices = (
+        (1, 'working'),
+        (2, 'standby'),
+        (3, 'malfunction')
+    )
     thing_id = models.IntegerField(primary_key=True)
     house = models.ForeignKey(House, on_delete=models.CASCADE)
     coordinate_x = models.FloatField()
     coordinate_y = models.FloatField()
     cpu_temp = models.FloatField()
     fan_flag = models.BooleanField(default=True)
-    status_code = models.IntegerField()
+    status_code = models.IntegerField(choices=status_code_choices)
     created_date = models.DateField(auto_now=True)
     def __str__(self):
         return self.thing_id
