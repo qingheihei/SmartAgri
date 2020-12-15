@@ -16,10 +16,10 @@ from api.utils.serializer import *
 from api.utils.customize_pagination import *
 from rest_framework.generics import GenericAPIView
 from rest_framework.parsers import JSONParser,FormParser
+from rest_framework.viewsets import GenericViewSet
 
 
 # Create your views here.
-
 
 def md5(user):
     import hashlib
@@ -89,16 +89,18 @@ class SensorView(APIView):
         #print(request.data)
         return HttpResponse('POST OK')
   
-class SensorValueView(GenericAPIView):
+class SensorValueView(GenericViewSet):
     queryset = models.SensorValue.objects.all()
     serializer_class = SensorValueSerializer
     pagination_class = MyPageNumberPagination
 
-    def get(self,request,*args,**kwargs):
+    def list(self,request,*args,**kwargs):
         values = self.get_queryset()
         page_values = self.paginate_queryset(values)
         ser = self.get_serializer(instance=page_values, many=True)
         return Response(ser.data)
+    def xxx(self,request,*args,**kwargs):
+        return Response('xxx')
 
 
 class SensorTypeView(APIView):
