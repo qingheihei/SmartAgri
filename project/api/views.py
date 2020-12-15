@@ -17,6 +17,7 @@ from api.utils.customize_pagination import *
 from rest_framework.generics import GenericAPIView
 from rest_framework.parsers import JSONParser,FormParser
 from rest_framework.viewsets import GenericViewSet,ModelViewSet
+from rest_framework.renderers import JSONRenderer,BrowsableAPIRenderer,AdminRenderer
 
 
 # Create your views here.
@@ -95,6 +96,8 @@ class SensorValueView(ModelViewSet):
     pagination_class = MyPageNumberPagination
 
 class SensorTypeView(APIView):
+    ## 可以写在View内
+    # renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
     def get(self,request,*args,**kwargs):
         #获取所有数据
         types = models.SensorType.objects.all()
