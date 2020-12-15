@@ -100,15 +100,23 @@ class SensorView(APIView):
 class SensorValueView(APIView):
     pass
 
+class MyPageNumberPagination(PageNumberPagination):
+    page_size = 3
+    page_size_query_param = 'size' # /?size=xx
+    max_page_size = 10
+    page_query_param = 'page'
+
 class SensorTypeView(APIView):
     def get(self,request,*args,**kwargs):
         #获取所有数据
         types = models.SensorType.objects.all()
         # 创建分页对象
-        pg = PageNumberPagination()
+        pg = MyPageNumberPagination()
         # 在数据库中获取分页的数据
         page_types = pg.paginate_queryset(queryset=types,request=request,view=self)
         # 对分页后的数据进行序列化
         ser = SensorTypeSerializer(instance=page_types, many=True)
-        return Response(ser.data)
+
+        #return Response(ser.data)
+        return pg.get_paginated_response(ser.data)
 
