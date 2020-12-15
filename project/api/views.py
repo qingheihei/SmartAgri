@@ -13,6 +13,9 @@ import json
 from api import models
 from api.utils.permission import AdminPermission
 from api.utils.serializer import *
+from api.utils.customize_pagination import *
+from rest_framework.generics import GenericAPIView
+from rest_framework.parsers import JSONParser,FormParser
 
 
 # Create your views here.
@@ -49,10 +52,6 @@ class AuthView(APIView):
             ret['msg'] = 'eee'
         return JsonResponse(ret)
 
-class HouseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.House
-        fields = "__all__"
 
 @method_decorator(csrf_exempt, name='dispatch')
 class HouseView(APIView):
@@ -70,12 +69,6 @@ class HouseView(APIView):
     def delete(self,request,*args,**kwargs):
         return HttpResponse('DELETE OK')
 
-class ThingSerializer(serializers.ModelSerializer):
-    ooo = serializers.CharField(source="get_status_code_display")
-    class Meta:
-        model = models.Thing
-        fields = ['thing_id','house','cpu_temp','ooo']
-        depth = 1
 
 class ThingView(APIView):
     def get(self,request,*args,**kwargs):
@@ -90,25 +83,23 @@ class MachineView(APIView):
 class MachineTypeView(APIView):
     pass
 
-from rest_framework.parsers import JSONParser,FormParser
 class SensorView(APIView):
     #parser_classes = [JSONParser,FormParser,]
     def post(self,request,*args,**kwargs):
         #print(request.data)
         return HttpResponse('POST OK')
   
-class SensorValueView(APIView):
-    pass
+class SensorValueView(GenericAPIView):
+    queryset = models.SensorValue.objects.all()
+    serializer_class = SensorValueSerializer
+    pagination_class = MyPageNumberPagination
 
-class MyPageNumberPagination(LimitOffsetPagination):
-    # page_size = 3
-    # page_size_query_param = 'size' # /?size=xx
-    # max_page_size = 10
-    # page_query_param = 'page'
-    default_limit = 2
-    limit_query_param = 'limit'
-    offset_query_param = 'offset'
-    max_limit = 10
+    def get(self,request,*args,**kwargs):
+        values = self.get_queryset()
+        page_values = self.paginate_queryset(values)
+        ser = self.get_serializer(instance=page_values, many=True)
+        return Response(ser.data)
+
 
 class SensorTypeView(APIView):
     def get(self,request,*args,**kwargs):
@@ -121,6 +112,5 @@ class SensorTypeView(APIView):
         # 对分页后的数据进行序列化
         ser = SensorTypeSerializer(instance=page_types, many=True)
 
-        #return Response(ser.data)
         return pg.get_paginated_response(ser.data)
 
