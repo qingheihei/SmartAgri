@@ -46,37 +46,31 @@ class AuthView(APIView):
             ret['msg'] = 'eee'
         return JsonResponse(ret)
 
-class HouseSerializer(serializers.Serializer):
-    house_id = serializers.IntegerField()
-    house_name = serializers.CharField()
+class HouseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.House
+        fields = "__all__"
 
 @method_decorator(csrf_exempt, name='dispatch')
 class HouseView(APIView):
     def get(self,request,*args,**kwargs):
-        # 方式1
-        # houses = models.House.objects.all().values_list('house_name')
-        # houses = list(houses)
-        # ret = json.dumps(houses, ensure_ascii=False)
-
-        house = models.House.objects.all().first()
+        pk = kwargs.get('id')
+        house = models.House.objects.filter(pk=pk).first()
         ser = HouseSerializer(instance=house, many=False)
         ret = json.dumps(ser.data, ensure_ascii=False)
         return HttpResponse(ret)
 
     def post(self,request,*args,**kwargs):
+        print(request.data)
         return HttpResponse('POST OK')
     def put(self,request,*args,**kwargs):
         return HttpResponse('PUT OK')
     def delete(self,request,*args,**kwargs):
         return HttpResponse('DELETE OK')
 
-# class ThingSerializer(serializers.Serializer):
-#     thing_id = serializers.IntegerField()
-#     house = serializers.CharField(source="house.house_name")
-#     xxx = serializers.CharField(source="status_code")
-#     ooo = serializers.CharField(source="get_status_code_display")
-
 class ThingSerializer(serializers.ModelSerializer):
+    # 生成链接
+    house = serializers.HyperlinkedIdentityField(view_name='hs',lookup_field='house_id', lookup_url_kwarg='id')
     ooo = serializers.CharField(source="get_status_code_display")
     class Meta:
         model = models.Thing
@@ -86,7 +80,7 @@ class ThingSerializer(serializers.ModelSerializer):
 class ThingView(APIView):
     def get(self,request,*args,**kwargs):
         things = models.Thing.objects.all()
-        ser = ThingSerializer(instance=things, many=True)
+        ser = ThingSerializer(instance=things, many=True,context={'request': request})
         #print(ser.data)
         ret = json.dumps(ser.data, ensure_ascii=False)
         return HttpResponse(ret)
