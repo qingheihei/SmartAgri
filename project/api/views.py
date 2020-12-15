@@ -7,9 +7,12 @@ from rest_framework.views import APIView
 from rest_framework.authentication import BaseAuthentication,BasicAuthentication
 from rest_framework.versioning import QueryParameterVersioning,URLPathVersioning
 from rest_framework import serializers
+from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination, CursorPagination
 import json
 from api import models
 from api.utils.permission import AdminPermission
+from api.utils.serializer import *
 
 
 # Create your views here.
@@ -54,9 +57,8 @@ class HouseSerializer(serializers.ModelSerializer):
 @method_decorator(csrf_exempt, name='dispatch')
 class HouseView(APIView):
     def get(self,request,*args,**kwargs):
-        pk = kwargs.get('id')
-        house = models.House.objects.filter(pk=pk).first()
-        ser = HouseSerializer(instance=house, many=False)
+        houses = models.House.objects.all()
+        ser = HouseSerializer(instance=houses, many=True)
         ret = json.dumps(ser.data, ensure_ascii=False)
         return HttpResponse(ret)
 
@@ -69,8 +71,6 @@ class HouseView(APIView):
         return HttpResponse('DELETE OK')
 
 class ThingSerializer(serializers.ModelSerializer):
-    # 生成链接
-    house = serializers.HyperlinkedIdentityField(view_name='hs',lookup_field='house_id', lookup_url_kwarg='id')
     ooo = serializers.CharField(source="get_status_code_display")
     class Meta:
         model = models.Thing
@@ -96,9 +96,19 @@ class SensorView(APIView):
     def post(self,request,*args,**kwargs):
         #print(request.data)
         return HttpResponse('POST OK')
-    
+  
 class SensorValueView(APIView):
     pass
 
 class SensorTypeView(APIView):
-    pass
+    def get(self,request,*args,**kwargs):
+        #获取所有数据
+        types = models.SensorType.objects.all()
+        # 创建分页对象
+        pg = PageNumberPagination()
+        # 在数据库中获取分页的数据
+        page_types = pg.paginate_queryset(queryset=types,request=request,view=self)
+        # 对分页后的数据进行序列化
+        ser = SensorTypeSerializer(instance=page_types, many=True)
+        return Response(ser.data)
+
