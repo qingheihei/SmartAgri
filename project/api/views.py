@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
@@ -9,15 +10,17 @@ from rest_framework.versioning import QueryParameterVersioning,URLPathVersioning
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination, CursorPagination
-import json
-from api import models
-from api.utils.permission import AdminPermission
-from api.utils.serializer import *
-from api.utils.customize_pagination import *
 from rest_framework.generics import GenericAPIView
 from rest_framework.parsers import JSONParser,FormParser
 from rest_framework.viewsets import GenericViewSet,ModelViewSet
 from rest_framework.renderers import JSONRenderer,BrowsableAPIRenderer,AdminRenderer
+from django_filters import rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend
+from api import models
+from api.utils.permission import AdminPermission
+from api.utils.serializer import *
+from api.utils.customize_pagination import *
+from api.utils.filter import *
 
 
 # Create your views here.
@@ -59,26 +62,31 @@ class HouseView(ModelViewSet):
     queryset = models.House.objects.all()
     serializer_class = HouseSerializer
     pagination_class = MyPageNumberPagination
+    filter_class = HouseFilter
 
 class ThingView(ModelViewSet):
     queryset = models.Thing.objects.all()
     serializer_class = ThingSerializer
     pagination_class = MyPageNumberPagination
+    filter_class = ThingFilter
 
 class SensorView(ModelViewSet):
     queryset = models.Sensor.objects.all()
     serializer_class = SensorSerializer
     pagination_class = MyPageNumberPagination
+    filter_class = SensorFilter
   
 class SensorValueView(ModelViewSet):
     queryset = models.SensorValue.objects.all()
     serializer_class = SensorValueSerializer
     pagination_class = MyPageNumberPagination
+    filter_class = SensorValueFilter
 
 class SensorTypeView(ModelViewSet):
     queryset = models.SensorType.objects.all()
     serializer_class = SensorTypeSerializer
     pagination_class = MyPageNumberPagination
+    filter_class = SensorTypeFilter
 
 class MachineView(ModelViewSet):
     queryset = models.Machine.objects.all()

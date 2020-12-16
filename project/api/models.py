@@ -78,7 +78,7 @@ class Sensor(models.Model):
         db_table = 'sensor'
 
 class SensorValue(models.Model):
-    sensor_value = models.FloatField()
+    sensor_value = models.FloatField(null=False)
     sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
     unit = models.CharField(max_length=32)
     created_at = models.DateTimeField(auto_now=True)
