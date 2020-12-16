@@ -55,58 +55,37 @@ class AuthView(APIView):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class HouseView(APIView):
-    def get(self,request,*args,**kwargs):
-        houses = models.House.objects.all()
-        ser = HouseSerializer(instance=houses, many=True)
-        ret = json.dumps(ser.data, ensure_ascii=False)
-        return HttpResponse(ret)
+class HouseView(ModelViewSet):
+    queryset = models.House.objects.all()
+    serializer_class = HouseSerializer
+    pagination_class = MyPageNumberPagination
 
-    def post(self,request,*args,**kwargs):
-        print(request.data)
-        return HttpResponse('POST OK')
-    def put(self,request,*args,**kwargs):
-        return HttpResponse('PUT OK')
-    def delete(self,request,*args,**kwargs):
-        return HttpResponse('DELETE OK')
+class ThingView(ModelViewSet):
+    queryset = models.Thing.objects.all()
+    serializer_class = ThingSerializer
+    pagination_class = MyPageNumberPagination
 
-
-class ThingView(APIView):
-    def get(self,request,*args,**kwargs):
-        things = models.Thing.objects.all()
-        ser = ThingSerializer(instance=things, many=True,context={'request': request})
-        #print(ser.data)
-        ret = json.dumps(ser.data, ensure_ascii=False)
-        return HttpResponse(ret)
-
-class MachineView(APIView):
-    pass
-class MachineTypeView(APIView):
-    pass
-
-class SensorView(APIView):
-    #parser_classes = [JSONParser,FormParser,]
-    def post(self,request,*args,**kwargs):
-        #print(request.data)
-        return HttpResponse('POST OK')
+class SensorView(ModelViewSet):
+    queryset = models.Sensor.objects.all()
+    serializer_class = SensorSerializer
+    pagination_class = MyPageNumberPagination
   
 class SensorValueView(ModelViewSet):
     queryset = models.SensorValue.objects.all()
     serializer_class = SensorValueSerializer
     pagination_class = MyPageNumberPagination
 
-class SensorTypeView(APIView):
-    ## 可以写在View内
-    # renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
-    def get(self,request,*args,**kwargs):
-        #获取所有数据
-        types = models.SensorType.objects.all()
-        # 创建分页对象
-        pg = MyPageNumberPagination()
-        # 在数据库中获取分页的数据
-        page_types = pg.paginate_queryset(queryset=types,request=request,view=self)
-        # 对分页后的数据进行序列化
-        ser = SensorTypeSerializer(instance=page_types, many=True)
+class SensorTypeView(ModelViewSet):
+    queryset = models.SensorType.objects.all()
+    serializer_class = SensorTypeSerializer
+    pagination_class = MyPageNumberPagination
 
-        return pg.get_paginated_response(ser.data)
+class MachineView(ModelViewSet):
+    queryset = models.Machine.objects.all()
+    serializer_class = MachineSerializer
+    pagination_class = MyPageNumberPagination
 
+class MachineTypeView(ModelViewSet):
+    queryset = models.MachineType.objects.all()
+    serializer_class = MachineTypeSerializer
+    pagination_class = MyPageNumberPagination

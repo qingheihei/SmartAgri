@@ -3,15 +3,27 @@ from api import models
 
 
 class HouseSerializer(serializers.ModelSerializer):
+    status = serializers.CharField(source="get_status_code_display")
     class Meta:
         model = models.House
-        fields = "__all__"
+        fields = ['house_id', 'house_name', 'city', 'address', 'latitude', 'longitude', 'status', 'created_date']
+        depth = 1
 
 class ThingSerializer(serializers.ModelSerializer):
-    ooo = serializers.CharField(source="get_status_code_display")
+    house_id = serializers.CharField(source='house.house_id')
+    status = serializers.CharField(source="get_status_code_display")
     class Meta:
         model = models.Thing
-        fields = ['thing_id','house','cpu_temp','ooo']
+        fields = ['thing_id','house_id','cpu_temp', 'position_x', 'position_y', 'fan_flag', 'status', 'created_date']
+        depth = 1
+
+class SensorSerializer(serializers.ModelSerializer):
+    sensor_type = serializers.CharField(source='sensor_type.type_name')
+    thing_id = serializers.CharField(source='thing.thing_id')
+    status = serializers.CharField(source="get_status_code_display")
+    class Meta:
+        model = models.Sensor
+        fields = ['sensor_ucode','sensor_name','sensor_type', 'thing_id', 'unit', 'precision_percent', 'min_value', 'max_value', 'maker', 'model_code', 'status', 'used_date']
         depth = 1
 
 class SensorValueSerializer(serializers.ModelSerializer):
@@ -22,4 +34,15 @@ class SensorValueSerializer(serializers.ModelSerializer):
 class SensorTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SensorType
+        fields = "__all__"
+
+class MachineSerializer(serializers.ModelSerializer):
+    status = serializers.CharField(source="get_status_code_display")
+    class Meta:
+        model = models.Machine
+        fields = ['machine_id', 'machine_name', 'house_id', 'maker', 'model_code', 'ele_consumption', 'position_x', 'position_y', 'status', 'created_date']
+
+class MachineTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.MachineType
         fields = "__all__"

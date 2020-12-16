@@ -1,10 +1,6 @@
 from django.db import models
 
 # Create your models here.
-class Tttest(models.Model):
-    emp_name = models.CharField(max_length=200)
-    hire_date = models.DateTimeField('date hired')
-
 class UserInfo(models.Model):
     user_type_choices = (
         (1,'basic'),
@@ -21,6 +17,11 @@ class UserToken(models.Model):
 
 
 class House(models.Model):
+    status_code_choices = (
+        (1, 'working'),
+        (2, 'standby'),
+        (3, 'malfunction')
+    )
     house_id = models.IntegerField(primary_key=True)
     house_name = models.CharField(max_length=64, unique=True)
     city = models.CharField(max_length=32)
@@ -28,7 +29,7 @@ class House(models.Model):
     latitude = models.FloatField()
     longitude =models.FloatField()
     created_date = models.DateField(auto_now=True)
-    status_code = models.IntegerField()
+    status_code = models.IntegerField(choices=status_code_choices)
     def __str__(self):
         return self.house_name
     class Meta:
@@ -42,8 +43,8 @@ class Thing(models.Model):
     )
     thing_id = models.IntegerField(primary_key=True)
     house = models.ForeignKey(House, on_delete=models.CASCADE)
-    coordinate_x = models.FloatField()
-    coordinate_y = models.FloatField()
+    position_x = models.FloatField()
+    position_y = models.FloatField()
     cpu_temp = models.FloatField()
     fan_flag = models.BooleanField(default=True)
     status_code = models.IntegerField(choices=status_code_choices)
@@ -54,6 +55,11 @@ class Thing(models.Model):
         db_table = 'thing'
 
 class Sensor(models.Model):
+    status_code_choices = (
+        (1, 'working'),
+        (2, 'standby'),
+        (3, 'malfunction')
+    )
     sensor_ucode = models.CharField(max_length=64, unique=True)
     sensor_name = models.CharField(max_length=64, unique=True)
     sensor_type = models.ForeignKey('SensorType', on_delete=models.CASCADE)
@@ -64,7 +70,7 @@ class Sensor(models.Model):
     max_value = models.FloatField()
     maker = models.CharField(max_length=64)
     model_code = models.CharField(max_length=64)
-    status_code = models.IntegerField()
+    status_code = models.IntegerField(choices=status_code_choices)
     used_date = models.DateField(auto_now=True)
     def __str__(self):
         return self.sensor_name
@@ -85,17 +91,27 @@ class SensorType(models.Model):
         db_table = 'sensortype'
 
 class Machine(models.Model):
+    status_code_choices = (
+        (1, 'working'),
+        (2, 'standby'),
+        (3, 'malfunction')
+    )
     machine_id = models.IntegerField(primary_key=True)
     machine_name = models.CharField(max_length=64, unique=True)
     house = models.ForeignKey(House, on_delete=models.CASCADE)
     maker = models.CharField(max_length=64)
     model_code = models.CharField(max_length=64)
     ele_consumption = models.FloatField()
-    coordinate_x = models.FloatField()
-    coordinate_y = models.FloatField()
-    status_code = models.IntegerField()
+    position_x = models.FloatField()
+    position_y = models.FloatField()
+    status_code = models.IntegerField(choices=status_code_choices)
     created_date = models.DateField(auto_now=True)
     def __str__(self):
         return self.machine_name
     class Meta:
         db_table = 'machine'
+
+class MachineType(models.Model):
+    type_name = models.CharField(max_length=64)
+    class Meta:
+        db_table = 'machinetype'

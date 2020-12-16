@@ -9,7 +9,7 @@ class MyPageNumberPagination(LimitOffsetPagination):
     # page_query_param = 'page'
 
     ## 使用offset和limit分页
-    default_limit = 3
+    default_limit = 50
     limit_query_param = 'limit'
     offset_query_param = 'offset'
-    max_limit = 10
+    max_limit = 1000
